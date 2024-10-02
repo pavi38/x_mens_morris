@@ -1,28 +1,36 @@
 package sprint1.product;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
+
 public class Player {
     private char color;
-    private int gamePieces;
-    private int boradPieces;
+    private Deque<GamePiece> gamePieces = new ArrayDeque<>();
+    private List<GamePiece> boradPieces = new ArrayList<>();
 
 
-    public Player(char color, int gamePieces) {
+    public Player(char color, int pieces) {
         this.color = color;
-        this.gamePieces = gamePieces;
-        this.boradPieces = 0;
+        for (int i = 0; i <= pieces; i++) {
+            this.gamePieces.push(new GamePiece(i, color));
+        }
     }
 
-    public int getGamePieces() {
-        return gamePieces;
+    public int numberOfGamePieces() {
+        return gamePieces.size();
     }
 
-    public void placeGamePiece() {
-        this.gamePieces--;
-        this.boradPieces++;
-    }
-
-    public void setGamePieces(int gamePieces) {
-        this.gamePieces = gamePieces;
+    public void placeGamePiece(int row, int col) {
+        GamePiece gamePiece;
+        if (gamePieces.peek()!=null){
+            gamePiece = gamePieces.poll();
+            gamePiece.setLocation(row, col);
+            boradPieces.add(gamePiece);
+        }
+//        this.gamePieces--;
+//        this.boradPieces++;
     }
 
     public char getColor() {

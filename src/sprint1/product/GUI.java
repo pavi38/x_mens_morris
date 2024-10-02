@@ -12,6 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 
+
 public class GUI extends Application {
 
 	private GameSpace[][] gameSpace;
@@ -49,7 +50,6 @@ public class GUI extends Application {
 	}
 
 	public class GameSpace extends Pane {
-
 		private int row, col;
 
 		public GameSpace(int row, int col, boolean valid) {
@@ -71,24 +71,64 @@ public class GUI extends Application {
 			circle.radiusProperty().bind(this.widthProperty().divide(8));
 			circle.setFill(Color.BLACK);
 
+            if (validLine(col, row, -1))
+				drawPointLine(0.5, 0.5, 1.0, 0.5);  // Right Line
+			if (validLine(row, col, -1))
+				drawPointLine(0.5, 0.5, 0.5, 1.0);  // Down Line
+			if (validLine(col, row, 1))
+				drawPointLine(0.0, 0.5, 0.5, 0.5);  // Left Line
+			if (validLine(row, col, 1))
+				drawPointLine(0.5, 0.0, 0.5, 0.5);  // Up Line
 			getChildren().add(circle);
 		}
+		private boolean validLine(int x, int y, int d ){
+			int start, end, center;
+			int max = gameSize-1;
+			int middle = max/2;
+
+			if (d==1){
+				start = middle;
+				end = 0;
+				center = max;
+			} else {
+				start = 0;
+				end = max;
+				center = middle;
+			}
+
+			return ((x>=start&&x<=center)
+					&&!(x==middle+d&&y==middle)
+					||(y==middle&&!(x==end||x==middle+d)));
+		}
+
+		private void drawPointLine(double startX, double startY, double endX, double endY) {
+			Line line = new Line();
+			line.setStroke(Color.BLACK);
+			line.setStrokeWidth(5.0);
+			line.startXProperty().bind(this.widthProperty().multiply(startX));
+			line.startYProperty().bind(this.heightProperty().multiply(startY));
+			line.endXProperty().bind(this.widthProperty().multiply(endX));
+			line.endYProperty().bind(this.heightProperty().multiply(endY));
+			getChildren().add(line);
+		}
+
 		private void drawLine(int row, int col) {
 			int max = gameSize-1;
 			Line line = new Line();
 			line.setStroke(Color.BLACK);
 			line.setStrokeWidth(5.0);
-			if (row == 0 || row == max || (row == 1 && (col>0 && col<max)) || (row == max-1 && (col > 0 && col< max))) {
-				line.startYProperty().bind(this.heightProperty().subtract(5).divide(2));
+			if (row == 0 || row == max || (row == 1 && (col>0 && col<max))
+					|| (row == max-1 && (col > 0 && col< max))) {
+				line.startYProperty().bind(this.heightProperty().divide(2));
 				line.endXProperty().bind(this.widthProperty());
-				line.endYProperty().bind(this.heightProperty().subtract(5).divide(2));
+				line.endYProperty().bind(this.heightProperty().divide(2));
 			}
 			else if (row==col){
 				line.setStroke(Color.TRANSPARENT);
 			}
 			else {
-				line.startXProperty().bind(this.widthProperty().subtract(5).divide(2));
-				line.endXProperty().bind(this.widthProperty().subtract(5).divide(2));
+				line.startXProperty().bind(this.widthProperty().divide(2));
+				line.endXProperty().bind(this.widthProperty().divide(2));
 				line.endYProperty().bind(this.heightProperty());
 			}
 			getChildren().add(line);

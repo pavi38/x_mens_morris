@@ -75,8 +75,8 @@ public class NMMGame {
 				grid[row][col] = Cell.RED;
 			else
 				grid[row][col] = Cell.BLUE;
-			turnPlayer.placeGamePiece();
-			if (redPlayer.getGamePieces() == 0 && bluePlayer.getGamePieces() == 0)
+			turnPlayer.placeGamePiece(row, col);
+			if (redPlayer.numberOfGamePieces() == 0 && bluePlayer.numberOfGamePieces() == 0)
 				currentGamestate = GameState.MOVING;
 			return true;
 		}
