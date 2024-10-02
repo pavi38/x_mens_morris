@@ -1,11 +1,11 @@
 package sprint1.product;
 
 public class GamePiece {
-    int id;
+    String id;
     int row, col;
 
     public GamePiece(int i, char color) {
-        this.id = i+color;
+        this.id = color+String.valueOf(i);
         System.out.println(this.id);
     }
 

@@ -13,7 +13,7 @@ public class Player {
 
     public Player(char color, int pieces) {
         this.color = color;
-        for (int i = 0; i <= pieces; i++) {
+        for (int i = 1; i <= pieces; i++) {
             this.gamePieces.push(new GamePiece(i, color));
         }
     }
