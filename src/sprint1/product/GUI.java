@@ -26,7 +26,7 @@ public class GUI extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		if (game == null) {
-			game = new NMMGame();
+			game = new NMMGame(9);
 		}
 		gameSize = game.getSize();
 		GridPane pane = new GridPane();
@@ -51,6 +51,8 @@ public class GUI extends Application {
 
 	public class GameSpace extends Pane {
 		private int row, col;
+		private char color;
+		private Circle gamePiece = new Circle();
 
 		public GameSpace(int row, int col, boolean valid) {
 			this.row = row;
@@ -135,16 +137,17 @@ public class GUI extends Application {
 		}
 
 		private void drawGamePiece() {
-			Circle circle = new Circle();
-			circle.centerXProperty().bind(this.widthProperty().divide(2));
-			circle.centerYProperty().bind(this.heightProperty().divide(2));
-			circle.radiusProperty().bind(this.widthProperty().divide(4));
-			if (game.getTurnPlayer().getColor() =='R')
-				circle.setFill(Color.RED);
+			this.color = game.getTurnPlayer().getColor();
+			this.gamePiece.centerXProperty().bind(this.widthProperty().divide(2));
+			this.gamePiece.centerYProperty().bind(this.heightProperty().divide(2));
+			this.gamePiece.radiusProperty().bind(this.widthProperty().divide(4));
+			this.gamePiece.setStrokeWidth(2);
+			if (this.color =='R')
+				this.gamePiece.setFill(Color.RED);
 			else
-				circle.setFill(Color.BLUE);
+				this.gamePiece.setFill(Color.BLUE);
 
-			getChildren().add(circle);
+		getChildren().add(this.gamePiece);
 		}
 
 		private void handleMouseClick() {
@@ -152,13 +155,15 @@ public class GUI extends Application {
 			String gameState;
 			System.out.println(updateGameStatus);
 			if (game.getCurrentGamestate() == NMMGame.GameState.PLACING){
-				if (game.makeMove(this.row, this.col)) {
+				if (game.placePiece(this.row, this.col)) {
 					drawGamePiece();
-					game.changeTurn();
 				}
+			} else if (game.getCurrentGamestate() == NMMGame.GameState.MOVING
+					&& this.color==game.getTurnPlayer().getColor()) {
+				this.gamePiece.setStroke(Color.GREEN);
 			}
 			gameState = String.valueOf(game.getCurrentGamestate());
-			updateGameStatus = (game.getTurnPlayer().getColor()=='R') ? gameState + " BLUE's Turn" : gameState + " RED's Turn";
+			updateGameStatus = (game.getTurnPlayer().getColor()=='R') ? gameState + " RED's Turn" : gameState + " BLUE's Turn";
 			gameStatus.setText(updateGameStatus);
 
 		}

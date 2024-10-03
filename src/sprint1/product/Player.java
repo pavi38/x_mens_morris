@@ -10,7 +10,6 @@ public class Player {
     private Deque<GamePiece> gamePieces = new ArrayDeque<>();
     private List<GamePiece> boradPieces = new ArrayList<>();
 
-
     public Player(char color, int pieces) {
         this.color = color;
         for (int i = 1; i <= pieces; i++) {
@@ -22,18 +21,20 @@ public class Player {
         return gamePieces.size();
     }
 
-    public void placeGamePiece(int row, int col) {
+    public void getGamePiece(int row, int col) {
         GamePiece gamePiece;
         if (gamePieces.peek()!=null){
             gamePiece = gamePieces.poll();
             gamePiece.setLocation(row, col);
             boradPieces.add(gamePiece);
         }
-//        this.gamePieces--;
-//        this.boradPieces++;
     }
 
     public char getColor() {
         return color;
+    }
+
+    public Deque<GamePiece> getGamePieces() {
+        return gamePieces;
     }
 }
