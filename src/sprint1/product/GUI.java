@@ -62,7 +62,7 @@ public class GUI extends Application {
 				drawPoint();
 				this.setOnMouseClicked(e -> handleMouseClick());
 			} else {
-				drawLine(row, col);
+				drawLine();
 			}
 		}
 
@@ -73,13 +73,13 @@ public class GUI extends Application {
 			circle.radiusProperty().bind(this.widthProperty().divide(8));
 			circle.setFill(Color.BLACK);
 
-            if (validLine(col, row, -1))
+            if (validLine(this.col, this.row, -1))
 				drawPointLine(0.5, 0.5, 1.0, 0.5);  // Right Line
-			if (validLine(row, col, -1))
+			if (validLine(this.row, this.col, -1))
 				drawPointLine(0.5, 0.5, 0.5, 1.0);  // Down Line
-			if (validLine(col, row, 1))
+			if (validLine(this.col, this.row, 1))
 				drawPointLine(0.0, 0.5, 0.5, 0.5);  // Left Line
-			if (validLine(row, col, 1))
+			if (validLine(this.row, this.col, 1))
 				drawPointLine(0.5, 0.0, 0.5, 0.5);  // Up Line
 			getChildren().add(circle);
 		}
@@ -114,18 +114,18 @@ public class GUI extends Application {
 			getChildren().add(line);
 		}
 
-		private void drawLine(int row, int col) {
+		private void drawLine() {
 			int max = gameSize-1;
 			Line line = new Line();
 			line.setStroke(Color.BLACK);
 			line.setStrokeWidth(5.0);
-			if (row == 0 || row == max || (row == 1 && (col>0 && col<max))
-					|| (row == max-1 && (col > 0 && col< max))) {
+			if (this.row == 0 || this.row == max || (this.row == 1 && (this.col>0 && this.col<max))
+					|| (this.row == max-1 && (this.col > 0 && this.col< max))) {
 				line.startYProperty().bind(this.heightProperty().divide(2));
 				line.endXProperty().bind(this.widthProperty());
 				line.endYProperty().bind(this.heightProperty().divide(2));
 			}
-			else if (row==col){
+			else if (this.row==this.col){
 				line.setStroke(Color.TRANSPARENT);
 			}
 			else {
@@ -137,15 +137,19 @@ public class GUI extends Application {
 		}
 
 		private void drawGamePiece() {
-			this.color = game.getTurnPlayer().getColor();
+			NMMGame.Cell cell = game.getCell(this.row, this.col);
 			this.gamePiece.centerXProperty().bind(this.widthProperty().divide(2));
 			this.gamePiece.centerYProperty().bind(this.heightProperty().divide(2));
 			this.gamePiece.radiusProperty().bind(this.widthProperty().divide(4));
 			this.gamePiece.setStrokeWidth(2);
-			if (this.color =='R')
+			if (cell == NMMGame.Cell.RED) {
 				this.gamePiece.setFill(Color.RED);
-			else
+				this.color = 'R';
+			}
+			else {
 				this.gamePiece.setFill(Color.BLUE);
+				this.color = 'B';
+			}
 
 		getChildren().add(this.gamePiece);
 		}
