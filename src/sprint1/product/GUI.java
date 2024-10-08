@@ -14,13 +14,9 @@ import javafx.scene.layout.GridPane;
 
 
 public class GUI extends Application {
-
 	private GameSpace[][] gameSpace;
-
 	private Label gameStatus = new Label("RED's Turn");
-
 	private NMMGame game;
-
 	private int gameSize = 0;
 
 	@Override
@@ -28,6 +24,7 @@ public class GUI extends Application {
 		if (game == null) {
 			game = new NMMGame(9);
 		}
+		updateGameStatus();
 		gameSize = game.getSize();
 		GridPane pane = new GridPane();
 		gameSpace = new GameSpace[gameSize][gameSize];
@@ -38,7 +35,6 @@ public class GUI extends Application {
 				else
 					pane.add(gameSpace[row][col] = new GameSpace(row,col, false), col, row);
 
-
 		BorderPane borderPane = new BorderPane();
 		borderPane.setCenter(pane);
 		borderPane.setBottom(gameStatus);
@@ -47,6 +43,16 @@ public class GUI extends Application {
 		primaryStage.setTitle("Nine Men's Morris");
 		primaryStage.setScene(scene);
 		primaryStage.show();
+	}
+
+	public void updateGameStatus(){
+		String updateGameStatus = "Turn: " ;
+		String gameState;
+		gameState = String.valueOf(game.getCurrentGamestate());
+		updateGameStatus += (game.getTurnPlayer().getColor()=='R') ? "RED" : "BLUE";
+		updateGameStatus += "\nGame State: "+gameState;
+		updateGameStatus += "\nPieces left: " + game.getTurnPlayer().numberOfGamePieces();
+		gameStatus.setText(updateGameStatus);
 	}
 
 	public class GameSpace extends Pane {
@@ -155,9 +161,6 @@ public class GUI extends Application {
 		}
 
 		private void handleMouseClick() {
-			String updateGameStatus = gameStatus.getText();
-			String gameState;
-			System.out.println(updateGameStatus);
 			if (game.getCurrentGamestate() == NMMGame.GameState.PLACING){
 				if (game.placePiece(this.row, this.col)) {
 					drawGamePiece();
@@ -166,12 +169,8 @@ public class GUI extends Application {
 					&& this.color==game.getTurnPlayer().getColor()) {
 				this.gamePiece.setStroke(Color.GREEN);
 			}
-			gameState = String.valueOf(game.getCurrentGamestate());
-			updateGameStatus = (game.getTurnPlayer().getColor()=='R') ? gameState + " RED's Turn" : gameState + " BLUE's Turn";
-			gameStatus.setText(updateGameStatus);
-
+			updateGameStatus();
 		}
-
 	}
 
 	public static void main(String[] args) {
