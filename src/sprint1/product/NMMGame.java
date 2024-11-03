@@ -94,15 +94,62 @@ public class NMMGame {
 		return false;
 	}
 
-	public void updateGameState(){
+	public void updateGameState() {
 		if (this.redPlayer.numberOfGamePieces() == 0 && this.bluePlayer.numberOfGamePieces() == 0)
 			this.currentGamestate = GameState.MOVING;
 	}
-
 	public void changeTurn() {
 		this.turnPlayer = (this.turnPlayer.getColor() == 'R') ? this.bluePlayer : this.redPlayer;
 	}
 
+
+	public void gameOver() {
+
+		if(currentGamestate == GameState.MOVING || currentGamestate == GameState.FLYING) {
+			Cell PlayerColor = Cell.EMPTY;
+			if(this.turnPlayer.getColor() == 'R'){
+				PlayerColor = Cell.RED;
+			}
+			else{
+				PlayerColor = Cell.BLUE;
+			}
+			if (this.turnPlayer.numberOfBoradPieces() < 3 || !LegalMove(PlayerColor)) {
+				if (this.turnPlayer.getColor() == 'R') {
+					System.out.println("Blue player won");
+				} else {
+					System.out.println("Red player won");
+				}
+			}
+		}
+	}
+	private boolean LegalMove(Cell PlayerColor) {
+		for(int i = 0; i < this.grid.length; i++){
+			for(int j = 0; j < this.grid[i].length; j++){
+				if(grid[i][j] == PlayerColor){
+					return checkAdjPos(i, j); //check again
+				}
+			}
+		}
+		return false;
+	}
+	private boolean checkAdjPos(int x, int y){
+		//  direactions (up, down, left, right)
+		int[][] directions = { {1, 0}, {-1, 0}, {0, 1}, {0, -1} };
+
+		for (int[] dir : directions) {
+			int newX = x + dir[0];
+			int newY = y + dir[1];
+
+			// Check if the new position is within bounds and empty
+			if (isWithinBounds(newX, newY) && grid[newX][newY] == Cell.EMPTY) {
+				return true;
+			}
+		}
+		return false;
+	}
+	private boolean isWithinBounds(int x, int y) {
+		return x >= 0 && x < grid.length && y >= 0 && y < grid[0].length;
+	}
 	public GameState getCurrentGamestate() {
 		return this.currentGamestate;
 	}

@@ -30,6 +30,8 @@ public class Player {
         }
     }
 
+    public int numberOfBoradPieces() {return boradPieces.size();}
+
     public char getColor() {
         return color;
     }
